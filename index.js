@@ -1,4 +1,5 @@
 const app = require('express')();
+const express = require('express');
 const server = require('http').Server(app);
 const io = require('socket.io')(server);
 
@@ -8,14 +9,15 @@ server.listen(port, () => {
 	console.log(`Server is running on port ${port}`);
 });
 
+app.use(express.static(__dirname + '/public'));
 app.get('/', (req, res) => {
-	res.sendFile(__dirname + '/public/index.html');
+	res.sendFile('index.html');
 });
 
 io.on('connection', (socket) => {
 	console.log('user connected');
-	socket.emit('message', { AdminBot: 'Hey how are you?'});
-	socket.on('another event', (data) => {
-		console.log(data);
+	socket.on('message', (msg) => {
+		console.log(`message: ${msg}`);
+		io.emit('message', msg);
 	})
 })
