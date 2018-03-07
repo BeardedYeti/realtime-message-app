@@ -13,15 +13,24 @@ app.use(express.static(__dirname + '/public'));
 app.get('/', (req, res) => {
 	res.sendFile('index.html');
 });
+app.get('/javascript', (req, res) => {
+	res.sendFile(__dirname + '/public/javascript.html');
+});
 
-io.on('connection', (socket) => {
-	console.log('user connected');
-	socket.on('message', (msg) => {
-		console.log(`message: ${msg}`);
-		io.emit('message', msg);
+// Developer Namespace
+const dev = io.of('/dev');
+
+dev.on('connection', (socket) => {
+	socket.on('join', (data) => {
+		socket.join(data.room);
+		dev.in(data.room).emit('message', `New User Joined ${data.room} Room`);
+	});
+	socket.on('message', (data) => {
+		console.log(`message: ${data.msg}`);
+		dev.in(data.room).emit('message', data.msg);
 	});
 	socket.on('disconnect', () => {
 		console.log('User Disconnected');
-		io.emit('message', 'User Disconnected');
+		dev.emit('message', 'User Disconnected');
 	})
 })
