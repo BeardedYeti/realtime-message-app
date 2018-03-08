@@ -11,10 +11,10 @@ server.listen(port, () => {
 
 app.use(express.static(__dirname + '/public'));
 app.get('/', (req, res) => {
-	res.sendFile('index.html');
+	res.sendFile(__dirname + '/public/index.html');
 });
 app.get('/javascript', (req, res) => {
-	res.sendFile(__dirname + '/public/javascript.html');
+	res.sendFile(__dirname + '/public/rooms/javascript.html');
 });
 
 // Developer Namespace
